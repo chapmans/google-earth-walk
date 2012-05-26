@@ -37,10 +37,15 @@ function initCB(instance) {
     
   // Update the view in Google Earth.
   ge.getView().setAbstractView(lookAt);
+<<<<<<< HEAD
   var view;
   view = false;
   var earthView;
   earthView = true;
+=======
+  
+  
+>>>>>>> 052b015f7db4b94a5e9fa30795acf642387603a2
   //ge.getView().setAbstractView(camera);
     
 }
