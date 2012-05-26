@@ -26,14 +26,18 @@ function initCB(instance) {
   //var camera = ge.getView().copyAsCamera(ge.ALTITUDE_RELATIVE_TO_GROUND);
  
   // Set new latitude and longitude values.
-  lookAt.setLatitude(32.702777);
-  lookAt.setLongitude(-117.106144);
+  lookAt.setLatitude(32.703586);
+  lookAt.setLongitude(-117.105677);
   lookAt.setTilt(lookAt.getTilt() + 88.0);
   lookAt.setRange(lookAt.getRange() * 0.00001);
+  var st = lookAt.getViewerOptions();
+  st.setOption(ge.OPTION_STREET_VIEW, ge.OPTION_STATE_ENABLED);
+  lookAt.setViewerOptions(st);
   //camera.setAltitude(camera.getAltitude() -90);
     
   // Update the view in Google Earth.
   ge.getView().setAbstractView(lookAt);
+  
   //ge.getView().setAbstractView(camera);
     
 }
