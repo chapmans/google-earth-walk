@@ -26,8 +26,8 @@ function initCB(instance) {
   //var camera = ge.getView().copyAsCamera(ge.ALTITUDE_RELATIVE_TO_GROUND);
  
   // Set new latitude and longitude values.
-  lookAt.setLatitude(32.703586);
-  lookAt.setLongitude(-117.105677);
+  lookAt.setLatitude(32.703387);
+  lookAt.setLongitude(-117.106158);
   lookAt.setTilt(lookAt.getTilt() + 88.0);
   lookAt.setRange(lookAt.getRange() * 0.00001);
   var st = lookAt.getViewerOptions();
@@ -37,7 +37,6 @@ function initCB(instance) {
     
   // Update the view in Google Earth.
   ge.getView().setAbstractView(lookAt);
-  
   
   //ge.getView().setAbstractView(camera);
     
