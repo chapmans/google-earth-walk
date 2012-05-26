@@ -32,11 +32,12 @@ function initCB(instance) {
   lookAt.setRange(lookAt.getRange() * 0.00001);
   var st = lookAt.getViewerOptions();
   st.setOption(ge.OPTION_STREET_VIEW, ge.OPTION_STATE_ENABLED);
-  lookAt.setViewerOptions(st);
+  
   //camera.setAltitude(camera.getAltitude() -90);
     
   // Update the view in Google Earth.
   ge.getView().setAbstractView(lookAt);
+  lookAt.setViewerOptions(st);
   
   //ge.getView().setAbstractView(camera);
     
