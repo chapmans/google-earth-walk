@@ -37,7 +37,10 @@ function initCB(instance) {
     
   // Update the view in Google Earth.
   ge.getView().setAbstractView(lookAt);
-  
+  var view;
+  view = false;
+  var earthView;
+  earthView = true;
   //ge.getView().setAbstractView(camera);
     
 }
@@ -53,16 +56,79 @@ google.setOnLoadCallback(init);
 $(document).keydown(function(event) {
   
   if (event.which == 88) {
-    resetView();
+    if (view == true)
+    {
+		view = false;
+	}
+	else if (view == false)
+	{
+		view = true;
+	}
   }
+  
   if (event.which == 84) {
-    moveUp();
-    console.log("natl");
+    if (earthView == true)
+    {
+		earthView = false;
+	}
+	else if (earthView == false)
+	{
+		earthView = true;
+	}
   }
+  var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+  var camera = ge.getView().copyAsCamera(ge.ALTITUDE_RELATIVE_TO_GROUND);
+  if (event.which == uparrow) {
+	if (view == true && earthView == false)
+	{
+		lookAt.setTilt(lookAt.getTilt() + 2);
+	}
+	if (view == false && earthView == false)
+	{
+		//does normal stuff
+	}
+	if (view == true && earthView == true)
+	{
+		camera.setAltitude(camera.getAltitude() - 1000);
+		ge.getView().setAbstractView(camera);
+	}
+	if (view == false && earthView == true)
+	{
+		//does normal stuff
+	}
+  }
+  if (event.which == downarrow) {
+  	if (view == true && earthView == false)
+  	{
+		lookAt.setTilt(lookAt.getTilt() - 2);
+	}
+	if (view == false && earthView == false)
+	{
+		//does normal stuff
+	}
+	if (view == true && earthView == true)
+	{
+		camera.setAltitude(camera.getAltitude() + 1000);
+		get.getView().setAbstractView(camera);
+	}
+	if (view == false && earthView == true)
+	{
+		//does normal stuff
+	}
+  }
+  if (event.which == leftarrow) {
+	//does normal stuff
+  }
+  
+  if (event.which == rightarrow) {
+	  //does normal stuff
+  }
+  
+  
   
 });
   
-function resetView() {
+function toggleView() {
   if(ge) { 
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
     lookAt.setTilt(0); //top-down 
