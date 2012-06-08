@@ -14,7 +14,7 @@
  *
  */
 
-/* 
+/*
  * Declare variables, load earth 
  */
 var ge;
@@ -22,9 +22,9 @@ var view = true;
 var earthView = true;
 var openSidebar = false;
 var curSelected;
-google.load("earth", "1");
-
 var MOVE_SPEED = 0.00005;
+
+google.load("earth", "1");
 
 /*
  * Initialization function.
@@ -43,6 +43,7 @@ function initCB(instance) {
   ge = instance; // starts instance
   ge.getWindow().setVisibility(true);
   ge.getOptions().setFlyToSpeed(ge.SPEED_TELEPORT);
+  //ge.getPlugin().streetViewEnabled(false);
   
   /* Enable cool random features */
   ge.getLayerRoot().enableLayerById(ge.LAYER_BUILDINGS, true);
@@ -60,7 +61,12 @@ function initCB(instance) {
   lookAt.setLongitude(-117.106158);
   lookAt.setTilt(lookAt.getTilt() + 88.0);
   lookAt.setRange(lookAt.getRange() * 0.000001);
+  lookAt.setAltitude(15);
   lookAt.setAltitudeMode(ge.ALTITUDE_RELATIVE_TO_GROUND);
+  
+  google.earth.addEventListener(ge.getWindow(), "mouseup", function(event) {
+    ge.getWindow().blur();
+  });
   
   // Set to street view
   /* var st = lookAt.getViewerOptions();
@@ -77,7 +83,7 @@ function initCB(instance) {
  * (Don't worry about it.)
  */
 function failureCB(errorCode) {
-
+  console.log("Failure :(")
 }
 
 /*
@@ -156,15 +162,39 @@ $(document).keydown(function(event) {
     openSidebar = !openSidebar;
   }
   
-  /* if (event.which == 88) { // 'x'
-     var st = lookAt.getViewerOptions();
-     st.setOption(ge.OPTION_STREET_VIEW, ge.OPTION_STATE_ENABLED);
-     lookAt.setViewerOptions(st); 
-  } */
+  if (event.which == 88) { // 'x'
+    if (earthView) {
+      showStreetView();
+    }
+    else {
+      showEarthView();
+    }
+    earthView = !earthView;
+  }
 });
 
 function degToRad(x) {
-  return x*Math.PI/180
+  return x*Math.PI/180;
+}
+
+function showStreetView() {
+  if (ge) {
+    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
+    var st = lookAt.getViewerOptions();
+    st.setOption(ge.OPTION_STREET_VIEW, ge.OPTION_STATE_ENABLED);
+    lookAt.setViewerOptions(st); 
+    ge.getView().setAbstractView(lookAt); //update view 
+  }
+}
+
+function showEarthView() {
+  if (ge) {
+    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
+    var st = lookAt.getViewerOptions();
+    st.setOption(ge.OPTION_STREET_VIEW, ge.OPTION_STATE_DISABLED);
+    lookAt.setViewerOptions(st); 
+    ge.getView().setAbstractView(lookAt); //update view 
+  }
 }
 
 function moveUp() {
@@ -180,9 +210,9 @@ function moveUp() {
 function moveDown() {
   if (ge) {
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    var angle = degToRad(lookAt.getHeading()) + (Math.PI);
+    var angle = degToRad(lookAt.getHeading() + 180);
     lookAt.setLatitude(lookAt.getLatitude() + Math.cos(angle)*MOVE_SPEED);
-    lookAt.setLongitude(lookAt.getLongitude() + Math.cos(angle)*MOVE_SPEED);
+    lookAt.setLongitude(lookAt.getLongitude() + Math.sin(angle)*MOVE_SPEED);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
@@ -190,9 +220,9 @@ function moveDown() {
 function moveLeft() {
   if (ge) {
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    var angle = degToRad(lookAt.getHeading()) + (Math.PI*3/2);
+    var angle = degToRad(lookAt.getHeading() + 270);
     lookAt.setLatitude(lookAt.getLatitude() + Math.cos(angle)*MOVE_SPEED);
-    lookAt.setLongitude(lookAt.getLongitude() + Math.cos(angle)*MOVE_SPEED);
+    lookAt.setLongitude(lookAt.getLongitude() + Math.sin(angle)*MOVE_SPEED);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
@@ -200,9 +230,9 @@ function moveLeft() {
 function moveRight() {
   if (ge) {
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    var angle = degToRad(lookAt.getHeading()) + (Math.PI/2);
+    var angle = degToRad(lookAt.getHeading() + 90);
     lookAt.setLatitude(lookAt.getLatitude() + Math.cos(angle)*MOVE_SPEED);
-    lookAt.setLongitude(lookAt.getLongitude() + Math.cos(angle)*MOVE_SPEED);
+    lookAt.setLongitude(lookAt.getLongitude() + Math.sin(angle)*MOVE_SPEED);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
@@ -210,23 +240,26 @@ function moveRight() {
 function panUp() {
   if (ge) {
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    lookAt.setTilt(lookAt.getTilt() - 3);
+    lookAt.setTilt(lookAt.getTilt() - 0.5);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
 
 function panDown() {
   if (ge) {
-    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    lookAt.setTilt(lookAt.getTilt() + 3);
+    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+    if (lookAt.getTilt() < 89.5) {
+      lookAt.setTilt(lookAt.getTilt() + 0.5);
+    }
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
 
 function panLeft() {
   if (ge) {
-    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    lookAt.setHeading(lookAt.getHeading() - 3);
+    var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+      console.log(lookAt.getHeading());
+    lookAt.setHeading(lookAt.getHeading() - 0.5);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
@@ -234,7 +267,7 @@ function panLeft() {
 function panRight() {
   if (ge) {
     var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND); 
-    lookAt.setHeading(lookAt.getHeading() + 3);
+    lookAt.setHeading(lookAt.getHeading() + 0.5);
     ge.getView().setAbstractView(lookAt); //update view 
   }
 }
@@ -247,6 +280,7 @@ function goTo(lat, lon) {
     lookAt.setTilt(lookAt.getTilt() + 88.0);
     lookAt.setRange(lookAt.getRange() * 0.000001);
     lookAt.setAltitudeMode(ge.ALTITUDE_RELATIVE_TO_GROUND);
+    lookAt.setAltitude(15);
     ge.getView().setAbstractView(lookAt);
   }
 }
